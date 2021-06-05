@@ -32,7 +32,7 @@ class Post_model extends CI_Model{
 
         date_default_timezone_set('Asia/Taipei'); 
         $now = date('Y-m-d H:i:s');
-        
+
         $this->db->set('create_date', $now);
         $this->db->insert('posts', $data);
     }
@@ -64,5 +64,24 @@ class Post_model extends CI_Model{
 	    return $res;
     }
 
+    //新增評論
+    public function insert_comment($post_id){
+        date_default_timezone_set('Asia/Taipei');
+        $now = date('Y-m-d H:i:s');
+        $data = array(
+            'author_id' => $this->session->userdata('userid'),
+            'author_name' => $this->session->userdata('fullname'),
+            'post_id' => $post_id,
+            'comment' => $this->input->post('comment'),
+            'comment_createtime' => $now
+        );
+        $this->db->insert('comments', $data);
+    }
 
+    //查詢評論
+     public function get_all_comment($post_id){
+        $this->db->where('post_id', $post_id);
+        $results = $this->db->get('comments');
+        return $results->result();
+    }
 }

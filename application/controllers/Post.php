@@ -61,6 +61,10 @@ class Post extends CI_Controller{
         if(isset($post_id)){
             $result = $this->Post_model->get_post($post_id);
             $row = $result->result()[0];
+
+            //查詢有哪些評論
+            $All_comment = $this->getall_comment($post_id);
+
             //設定傳給前端的值，index.php為跳轉頁
             $data = array(
                 'page_body' =>'view_post',
@@ -69,10 +73,10 @@ class Post extends CI_Controller{
                 'author_id'=>(int)$row->author_id,
                 'author_name' => $row->author_name,
                 'image' => $row->image,
-                'content' =>$row->content
+                'content' =>$row->content,
+                'All_comment' => $All_comment,
             ); 
             $this->load->view('pages/home/index', $data);
-            
         }else{
             $data = array(
                 'error' => '<p>Data is invalid. Make sure data is fill up</p>',
@@ -85,7 +89,8 @@ class Post extends CI_Controller{
 
     //寫一個點編輯導編輯頁方法，或者跟上面index寫在一起
     public function show_editpage($post_id){
-        if($this->session->userdata('islogin')){
+        if(isset($post_id)){
+            if($this->session->userdata('islogin')){
             $result = $this->Post_model->get_post($post_id);
             $row = $result->result()[0];
             //設定傳給前端的值，index.php為跳轉頁
@@ -98,10 +103,12 @@ class Post extends CI_Controller{
                 'image' => $row->image,
                 'content' =>$row->content
             ); 
-            $this->load->view('pages/home/index', $data);
-        }else{//若不是登入中，導回主頁
-            redirect('home');
+                $this->load->view('pages/home/index', $data);
+            }else{//若不是登入中，導回主頁
+                redirect('home');
+            }
         }
+        
     }
 
     //執行更新編輯文章
@@ -154,6 +161,47 @@ class Post extends CI_Controller{
                     $this->load->view('pages/home/index', $data);
                 }
             }
+        }
+    }
+
+    //新增評論
+    public function comment($post_id){
+        if(isset($post_id)){
+            if($_SERVER['REQUEST_METHOD'] === "POST"){
+                $this->form_validation->set_rules('comment', 'Comment', 'trim|required|min_length[1]');
+                if($this->form_validation->run()){
+                    $this->Post_model->insert_comment($post_id);
+                    redirect('post/view/' . $post_id);
+                }
+            }else{
+                $data = array(
+                    'error' => '<p>Request method error</p>',
+                    'page_body' => 'errors'
+                );
+                $this->load->view('page/home/index', $data);
+            }
+        }else{
+            $data = array(
+                'error' => '<p>No post id define</p>',
+                'page_body' => 'errors'
+            );
+            $this->load->view('page/home/index', $data);
+        }
+    }
+
+    //查現有評論
+    public function getall_comment($post_id){
+        if(isset($post_id)){
+            $Allcomment = $this->Post_model->get_all_comment($post_id);
+            if($Allcomment > 1){
+                return $Allcomment;
+            }
+        }else{
+            $data = array(
+                'error' => '<p>No post id define</p>',
+                'page_body' => 'errors'
+            );
+            $this->load->view('page/home/index', $data);
         }
     }
 }

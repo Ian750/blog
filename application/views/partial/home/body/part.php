@@ -10,7 +10,7 @@
         <div class="post-header">
             <p class="post-title"><?php echo $row->title; ?></p>
             <p class="author" style="color:red; text-align:right;" >
-            	By
+            	Post By
             		<?php
                         if((int)$this->session->userdata('userid') === (int)$row->author_id){
                             echo "You";

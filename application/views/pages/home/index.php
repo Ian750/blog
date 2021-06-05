@@ -24,10 +24,9 @@
                     $this->load->view('partial/home/body/view_post');
                 }else if($page_body === 'edit_post'){
                     $this->load->view('partial/home/body/edit_post');
-                }
-
-
-                 else if($page_body === 'errors'){
+                }else if($page_body === 'profile_view'){
+                    $this->load->view('partials/home/body/profile_view');
+                }else if($page_body === 'errors'){
                     $this->load->view('partials/home/body/errors');
                 }
                 ?>

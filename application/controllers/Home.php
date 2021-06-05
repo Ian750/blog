@@ -16,9 +16,4 @@ class Home extends CI_Controller{
         $this->load->view('pages/home/index', $data);
 
     }
-    // public function test(){
-    //     echo "Test route <br>";
-    //     $data['res'] = "Hi hello bye bye";
-    //     $this->load->view('test/test', $data);
-    // }
 }
