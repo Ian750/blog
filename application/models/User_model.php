@@ -21,12 +21,15 @@ class User_model extends CI_Model
 	//會員註冊
 	public function register(){
 		//設定寫入參數
+		date_default_timezone_set('Asia/Taipei');
+        $now = date('Y-m-d H:i:s');
 		$data = array(
 			'password' => $this->input->post('password'),
 			'fullname' => $this->input->post('fullname'),
 			'username' => $this->input->post('username'),
 			'Email' => $this->input->post('email'),
-			'gender' => $this->input->post('gender')
+			'gender' => $this->input->post('gender'),
+			'create_date' => $now,
 		);
 		//寫入資料庫
 		$this->db->insert('users',$data);

@@ -1,6 +1,9 @@
 <div class="categories">
-	<p class="categories-header">ToolBar</p>
-
+	<?php if($this->session->userdata('islogin')){ ?>
+		<p class="categories-header" >Hi~<?php echo $this->session->userdata('username');?></p>
+	<?php } else{?>
+		<p class="categories-header">Welcome~Blog</p>
+	 <?php } ?>
 	<div class="main-category-list">
 		<div class="main-category-list-item">
 			
@@ -14,7 +17,7 @@
                      <div class="sub-category-list-item">
 				        <?php if($this->session->userdata('islogin')){ ?>
 			                <p>
-			                    <a href="<?php echo base_url(); ?>index.php/post/create">Post</a>
+			                    <a href="<?php echo base_url(); ?>index.php/post">Post</a>
 			                </p>
 			                <p>
 			                    <a href="<?php echo base_url(); ?>index.php/user/profile/<?php echo $this->session->userdata('userid'); ?>">Profile</a>

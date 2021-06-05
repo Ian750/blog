@@ -11,7 +11,7 @@ class Home extends CI_Controller{
     public function index(){
         $data['page_body'] = "part";
         // $data['message'] = "test";
-        $data['results'] = $this->Post_model->get_all();
+        $data['results'] = $this->Post_model->get_post();
          // show_error($data['results'][0]['id']);
         $this->load->view('pages/home/index', $data);
 

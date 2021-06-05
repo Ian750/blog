@@ -39,7 +39,7 @@ class User extends CI_Controller{
                     if($getuserdata->num_rows() === 1){
                         $userdata = $getuserdata->result();
                         $data = array(
-                            'userid' => $userdata[0]->id,
+                            'userid' => $userdata[0]->user_id,
                             'username' => $userdata[0]->username,
                             'fullname' => $userdata[0]->fullname,
                             'islogin' => true
@@ -116,103 +116,6 @@ class User extends CI_Controller{
             }
         }
 
-         // $this->form_validation->set_rules('Email','Name','required');
-         // $this->form_validation->set_rules('password','text','required');
-         // $this->form_validation->set_rules('fullname','text','required');
-         // $this->form_validation->set_rules('username','text','required');
-         // $this->form_validation->set_rules('gender','text','required');
-
-        //  $data['title'] = 'validation error';
-        //  if ($this->form_validation->run()) {
-        //     $this->User_model->register();
-        //     // $this->load->view('pages/success',$data);
-        //     // echo "success!";
-        //     $this->load->helper('url');
-        //     //導轉頁面
-        //     redirect('pages/view');
-        //  }else{
-        //    // $this->load->view('templates/header', $data);
-        //    // $this->load->view('pages/register');
-        //    // $this->load->view('templates/footer');
-        // }
-    }
-
-
-
-
-
-	/**
-	 public function index(){
-            $data['all_student'] = $this->Student_model->get_student();
-            $data['title'] = 'All Students form controllers';
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('class/index', $data);
-            $this->load->view('templates/footer');
-     }*/
-
-    //查詢單筆 view.php
-	public function view($number){
-            $data['student'] = $this->Student_model->get_student($number);
-            
-            // show_error($data['student']);
-          // $first = $data['student'][0]['name'];
-			//show_error($first);
-
-            if(empty( $data['student'])){
-            	show_404();
-            }
- 
-            //各別顯示
-            $data['title'] = "Student：".$data['student']['name'];
-       
-
-            $this->load->view('templates/header', $data);
-            $this->load->view('class/view', $data);
-            $this->load->view('templates/footer');
-    }
-
-    //新增資料 create.php
-    public function create(){
-    	$this->load->helper('form');
-    	$this->load->library('form_validation');
-
-    	$data['title'] = 'Create a new student';
-
-    	 //新增檢核 前端畫面student_name及text必須有值
-    	 $this->form_validation->set_rules('student_name','Name','required');
-    	 $this->form_validation->set_rules('text','text','required');
-
-    	 if ($this->form_validation->run() === FALSE) {
-    	 	
-            $this->load->view('templates/header', $data);
-            $this->load->view('class/create');
-            $this->load->view('templates/footer');
-    	 }else{
-    	 	//成功就執行新增至資料庫，並顯示成功頁面
-    	 	 $this->Student_model->set_students();
-    	 	 $this->load->view('class/success',$data);
-    	 }
-    }
-
-    //刪除資料
-    public function remove(){
-    	$this->load->helper('form');
-    	$this->load->library('form_validation');
-
-    	$data['title'] = 'Remove a new student';
-
-    	$this->form_validation->set_rules('student_name','Name','required');
-
-    	if ($this->form_validation->run() === FALSE) {
-    		$this->load->view('templates/header', $data);
-            $this->load->view('class/remove', $data);
-            $this->load->view('templates/footer');
-    	}else{
-    		$data['title'] = 'Remove success!';
-    		$this->Student_model->remove_students();
-    	 	 $this->load->view('class/success',$data);
-    	}
     }
 }
 
