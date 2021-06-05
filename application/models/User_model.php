@@ -32,11 +32,10 @@ class User_model extends CI_Model
 			'create_date' => $now,
 		);
 		//寫入資料庫
-		$this->db->insert('users',$data);
-		//回傳生成的id及寫入的username
-		return array($this->db->insert_id(), $this->input->post('username'));
+		$respone = $this->db->insert('users',$data);
+		//回傳生成的id及寫入的username,fullname
+		return array($this->db->insert_id(), $this->input->post('username'),$this->input->post('fullname'));
 	}
-
 }
 
 ?>

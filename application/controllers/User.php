@@ -15,7 +15,10 @@ class User extends CI_Controller{
         if($this->session->userdata('islogin')){
             redirect('home');
         }else{
-            $this->load->view('pages/home/login');
+            // $this->load->view('pages/home/login');
+            $this->session->unset_userdata('firstlogin');
+            $data['page_body'] = 'login';
+            $this->load->view('pages/home/index', $data);
         }
     }
     //導至註冊畫面
@@ -23,7 +26,9 @@ class User extends CI_Controller{
         if($this->session->userdata('islogin')){
             redirect('home');
         }else{
-            $this->load->view('pages/home/register');
+            // $this->load->view('pages/home/register');
+            $data['page_body'] = 'register';
+            $this->load->view('pages/home/index', $data);
         }
     }
 
@@ -46,12 +51,13 @@ class User extends CI_Controller{
                         );
                         $this->session->set_userdata($data);
                         redirect('home');
-                    }else if($getuserdata->num_rows() === 0){
+                    }else if($getuserdata->num_rows() === 0){//帳號或密碼錯誤
                         $data = array(
                             'firstlogin'=> true
                         );
                         $this->session->set_userdata($data);
-                        $this->load->view('pages/home/login');
+                        $page['page_body'] = 'login';
+                        $this->load->view('pages/home/index', $page);
                     }else{
                         throw new \Exception("Something error");
                     }
@@ -109,13 +115,13 @@ class User extends CI_Controller{
                         'existed'=> true
                     );
                     $this->session->set_userdata($data);
-                    $this->load->view('pages/home/register');
+                    $page['page_body'] = 'register';
+                    $this->load->view('pages/home/index', $page); 
                 }
             }else{
                 echo "validation error";
             }
         }
-
     }
 }
 

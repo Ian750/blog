@@ -5,6 +5,7 @@
 <?php } ?>  -->
 
 <!--每筆blog資訊-->
+<?php if(count($results) > 0){ ?>
 <?php foreach ($results as $row){ ?>
 	<div class="post-card">
         <div class="post-header">
@@ -34,4 +35,11 @@
             </p> 
         </div>
     </div>
+<?php } ?>
+<?php }else{ ?>
+    <div class="post-card">
+        <div class="post-header">
+            <p class="post-title">尚無文章</p>
+        </div>
+    </div>       
 <?php } ?>

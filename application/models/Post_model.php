@@ -11,7 +11,7 @@ class Post_model extends CI_Model{
     	if($post_id == -1){
     		$this->db->select('posts.*, users.fullname AS author_name');
 	        $this->db->join('users', 'posts.author_id = users.user_id');
-	        $result = $this->db->get('posts', 6);
+	        $result = $this->db->get('posts');
         	return $result->result();
     	}else{
     		$this->db->select('posts.*, users.fullname AS author_name');
@@ -19,10 +19,18 @@ class Post_model extends CI_Model{
 	        $this->db->join('users', 'posts.author_id = users.user_id');
 	        $result = $this->db->get('posts');
 	        return $result;
-    	}
-	        
-
+    	}	       
     }
+
+    //個人首頁查詢個人blog
+    public function getAll_by_author_id($author_id){
+        $this->db->select('posts.*, users.fullname AS author_name');
+        $this->db->join('users', 'posts.author_id = users.user_id');
+        $this->db->where('author_id', $author_id);
+        $result = $this->db->get('posts');
+        return $result->result();
+    }
+
 	//新增文章
 	public function insert($file){
         $data['title'] = $this->input->post('title');

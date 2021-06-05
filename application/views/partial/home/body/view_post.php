@@ -31,13 +31,15 @@
                     );
                     $this->session->set_userdata($data);
                 ?>
-	    		<a class="btn btn-primary" href="<?php echo base_url() ?>index.php/post/show_editpage/<?php echo $post_id; ?>" role="button">Edit</a>
+	    		<a class="btn btn-primary" href="<?php echo base_url() ?>index.php/post/show_editpage/<?php echo $post_id; ?>" role="button">編輯文章</a>
 	    		
-	    		<a class="btn btn-primary" href="<?php echo base_url() ?>index.php/post/delete/<?php echo $post_id; ?>" role="button">Delete</a>
+	    		<a class="btn btn-primary" href="<?php echo base_url() ?>index.php/post/delete/<?php echo $post_id; ?>" role="button">刪除文章</a>
 	        <?php } ?>
 	    	</p>
 	    <?php } ?>
     </div>
+
+<br>
     <!-- 評論 -->
 <?php if($this->session->userdata('islogin')){ ?>
     <div class="comment-input-area">
@@ -45,20 +47,20 @@
                 <div class="form-area">
                     <div class="form-comment-box">
                         <p>
-                            <textarea class="form-content-input" name="comment" rows="5" id="comment" required></textarea>
-                            <button type="submit" class="btn btn-primary btn-primary-costom">新增評論</button>
+                            <textarea class="form-content-input" name="comment" rows="5" id="comment" required></textarea><nobr>
                         </p>
-                        
                     </div>                    
                 </div>
-                    
+                <p style="text-align:right;">
+                   <button type="submit" class="btn btn-primary btn-primary-costom">新增評論</button>   
+                </p>   
                 <?php echo form_close(); ?>
             </div>
 <?php }else{ ?>
     <p style="text-align:right;"><a href="<?php echo base_url(); ?>index.php/user">登入</a>進行評論</p>
 <?php } ?>  
 
-<hr class="post-break-hr">    
+<br><hr class="post-break-hr">    
     <!-- 現有評論 -->
     <?php if(count($All_comment) > 0){ ?>
         <?php foreach ($All_comment as $comment_row){ ?>

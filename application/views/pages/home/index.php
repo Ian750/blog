@@ -24,14 +24,15 @@
                     $this->load->view('partial/home/body/view_post');
                 }else if($page_body === 'edit_post'){
                     $this->load->view('partial/home/body/edit_post');
-                }else if($page_body === 'profile_view'){
-                    $this->load->view('partials/home/body/profile_view');
                 }else if($page_body === 'errors'){
-                    $this->load->view('partials/home/body/errors');
+                    $this->load->view('partial/home/body/errors');
+                }else if($page_body === 'login'){
+                    $this->load->view('partial/home/body/login');
+                }else if($page_body === 'register'){
+                    $this->load->view('partial/home/body/register');
                 }
                 ?>
             </div>
-        <div class="right-box">右邊欄位</div>
     </div>
 </div>
 </body>

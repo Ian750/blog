@@ -20,13 +20,12 @@
 			                    <a href="<?php echo base_url(); ?>index.php/post">Post</a>
 			                </p>
 			                <p>
-			                    <a href="<?php echo base_url(); ?>index.php/user/profile/<?php echo $this->session->userdata('userid'); ?>">Profile</a>
+			                    <a href="<?php echo base_url(); ?>index.php/home/getProfile/<?php echo $this->session->userdata('userid'); ?>">Profile</a>
 			                </p>
 			                <p>
 			                    <a href="<?php echo base_url(); ?>index.php/user/logout">LoginOut</a>
 			                </p>
 			            <?php }else{ ?>
-			            	<?php $this->session->unset_userdata('firstlogin');?>
 			                <p>
 			                    <a href="<?php echo base_url(); ?>index.php/user">Login</a>
 			                </p>
