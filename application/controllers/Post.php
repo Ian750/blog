@@ -25,10 +25,10 @@ class Post extends CI_Controller{
     //發表文章
     public function create(){
     	if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    		$this->form_validation->set_rules('title', 'Title', 'required|min_length[1]');
-            $this->form_validation->set_rules('content', 'Content', 'required|min_length[1]');
+    		$this->form_validation->set_rules('title', 'Title', 'trim|required|min_length[1]');
+            $this->form_validation->set_rules('content', 'Content', 'trim|required|min_length[1]');
             if($this->form_validation->run()){
-            	//uplooda image set
+            	//uplooda image 偏好設定
             	$config['upload_path'] = './uploads/image';
                 $config['allowed_types'] = 'gif|jpg|png';
                 $config['max_size'] = '0';
@@ -36,18 +36,29 @@ class Post extends CI_Controller{
                 $config['max_height']  = '0';
                 //載入upload函數
                 $this->load->library('upload', $config);
-
-                if ( ! $this->upload->do_upload('image')) {
-                        $error = array(
-                            'error' => $this->upload->display_errors(),
-                            'page_body' => 'errors'
-                        );
-                        $this->load->view('pages/home/index', $error);
-                    } else {
-                        $file = $this->upload->data();
-                        $this->Post_model->insert($file);
-                        redirect('home');
-                    }
+                try{
+                    if ( ! $this->upload->do_upload('image')) {
+                            //格式化錯誤
+                            $error = array(
+                                'error' => $this->upload->display_errors(),
+                                'page_body' => 'errors'
+                            );
+                            $this->load->view('pages/home/index', $error);
+                        } else {
+                            $this->db->trans_begin();
+                            $file = $this->upload->data();
+                            $this->Post_model->insert($file);
+                            if($this->db->trans_status() === TRUE){
+                                $this->db->trans_commit();
+                                redirect('home');
+                            }else{
+                                $this->db->trans_rollback();//交易出現異常
+                            }
+                        }
+                }catch(\Exception $e){
+                    $this->db->trans_rollback();//交易出現異常
+                    die($e->getMessage());
+                }   
             }else{//發表文章驗證失敗，先在前端做處理
                 echo "validation error";
             }
@@ -114,8 +125,8 @@ class Post extends CI_Controller{
     //執行更新編輯文章
     public function edit(){
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $this->form_validation->set_rules('title', 'Title', 'required|min_length[1]');
-            $this->form_validation->set_rules('content', 'Content', 'required|min_length[1]');
+            $this->form_validation->set_rules('title', 'Title', 'trim|required|min_length[1]');
+            $this->form_validation->set_rules('content', 'Content', 'trim|required|min_length[1]');
             if($this->form_validation->run()){
                 //uplooda image set
                 $config['upload_path'] = './uploads/image';
@@ -126,15 +137,26 @@ class Post extends CI_Controller{
                 //載入upload函數
                 $this->load->library('upload', $config);
                 //如果沒有重新新增圖片，就不修改
-                if ( ! $this->upload->do_upload('image')) {
-                       $this->Post_model->edit(FALSE);
-                    } else {
-                        $file = $this->upload->data();
-                        $this->Post_model->edit($file);
+                try{
+                    $this->db->trans_begin();
+                    if ( ! $this->upload->do_upload('image')) {
+                           $this->Post_model->edit(FALSE);
+                        } else {
+                            $file = $this->upload->data();
+                            $this->Post_model->edit($file);
+                        }
+                    //若無異常，導回原本view_post
+                    if($this->db->trans_status() === TRUE){
+                        $this->db->trans_commit();
+                        $post_id= $this->input->post('posts_id');
+                        $this->view($post_id);
+                    }else{
+                        $this->db->trans_rollback();
                     }
-                //導回原本view_post
-               $post_id= $this->input->post('posts_id');
-               $this->view($post_id);   
+                }catch (\Exception $e){
+                    $this->db->trans_rollback();
+                    die($e->getMessage());
+                }    
             }else{
                 echo "validation error";
             }
@@ -148,19 +170,25 @@ class Post extends CI_Controller{
         //再驗一次目前登入者為該篇作者
         if( $this->session->userdata('author_id') == $this->session->userdata('userid')){
             if(isset($post_id)){
-            //回傳布林值
-            $response = $this->Post_model->delete($post_id);
-                if($response==true){
-                    echo "Deleted successfully !";
-                    redirect('home');
-                }else{
-                    $data = array(
-                        'error' => '<p>Deleted Error</p>',
-                        'page_body' => 'errors'
-                    );
-                    $this->load->view('pages/home/index', $data);
-                }
-            }
+                try{ 
+                    $this->db->trans_begin();
+                    $response = $this->Post_model->delete($post_id);
+                        if($this->db->trans_status() === TRUE){
+                            $this->db->trans_commit();
+                            redirect('home');
+                        }else{
+                            $this->db->trans_rollback();
+                            $data = array(
+                                'error' => '<p>Deleted Error</p>',
+                                'page_body' => 'errors'
+                            );
+                            $this->load->view('pages/home/index', $data);
+                        }
+                }catch(\Exception $e){
+                    $this->db->trans_rollback();
+                    die($e->getMessage());
+                }    
+            }   
         }
     }
 
@@ -170,8 +198,19 @@ class Post extends CI_Controller{
             if($_SERVER['REQUEST_METHOD'] === "POST"){
                 $this->form_validation->set_rules('comment', 'Comment', 'trim|required|min_length[1]');
                 if($this->form_validation->run()){
-                    $this->Post_model->insert_comment($post_id);
-                    redirect('post/view/' . $post_id);
+                    try{
+                        $this->db->trans_begin();
+                        $this->Post_model->insert_comment($post_id);
+                        if($this->db->trans_status() === TRUE){
+                            $this->db->trans_commit();
+                            redirect('post/view/' . $post_id);
+                        }else{
+                           $this->db->trans_rollback(); 
+                        }
+                    }catch(\Exception $e){
+                        $this->db->trans_rollback();
+                        die($e->getMessage());
+                    }
                 }
             }else{
                 $data = array(
@@ -181,10 +220,6 @@ class Post extends CI_Controller{
                 $this->load->view('page/home/index', $data);
             }
         }else{
-            $data = array(
-                'error' => '<p>No post id define</p>',
-                'page_body' => 'errors'
-            );
             $this->load->view('page/home/index', $data);
         }
     }

@@ -67,9 +67,19 @@ class Post_model extends CI_Model{
 
 	//刪除文章
 	public function delete($post_id){
-		$this->db->where("posts_id", $post_id);
-	    $res = $this->db->delete("posts");
-	    return $res;
+        //新增刪除圖片
+        $result = $this->get_post($post_id);
+        $row = $result->result()[0];
+        $baseurl=base_url();
+        $imagefile = $row->image;
+        if(file_exists("uploads//image/".$imagefile)){
+           $delete = unlink("uploads//image/".$imagefile);
+           if($delete){
+            $this->db->where("posts_id", $post_id);
+            $res = $this->db->delete("posts");
+            return $res;
+            }
+        }
     }
 
     //新增評論

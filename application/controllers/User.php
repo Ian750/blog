@@ -15,7 +15,6 @@ class User extends CI_Controller{
         if($this->session->userdata('islogin')){
             redirect('home');
         }else{
-            // $this->load->view('pages/home/login');
             $this->session->unset_userdata('firstlogin');
             $data['page_body'] = 'login';
             $this->load->view('pages/home/index', $data);
@@ -26,7 +25,6 @@ class User extends CI_Controller{
         if($this->session->userdata('islogin')){
             redirect('home');
         }else{
-            // $this->load->view('pages/home/register');
             $data['page_body'] = 'register';
             $this->load->view('pages/home/index', $data);
         }
@@ -58,10 +56,8 @@ class User extends CI_Controller{
                         $this->session->set_userdata($data);
                         $page['page_body'] = 'login';
                         $this->load->view('pages/home/index', $page);
-                    }else{
-                        throw new \Exception("Something error");
                     }
-                }catch(\Exception $e){//如何處理exception?
+                }catch(\Exception $e){
                     die($e->getMessage());
                     // echo $e;
                 }
@@ -99,24 +95,35 @@ class User extends CI_Controller{
             $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
         
             if($this->form_validation->run()){
-                $getuserdata = $this->user_model->get_user();
-                if($getuserdata->num_rows() === 0){//若帳號不存在
-                    $getnewuser = $this->user_model->register();
-                    $data = array(
-                        'userid' => $getnewuser[0],
-                        'username' => $getnewuser[1],
-                        'fullname' => $getnewuser[2],
-                        'islogin' => true
-                    );
-                $this->session->set_userdata($data);
-                redirect('home');
-                }else{//帳號重複
-                    $data = array(
-                        'existed'=> true
-                    );
-                    $this->session->set_userdata($data);
-                    $page['page_body'] = 'register';
-                    $this->load->view('pages/home/index', $page); 
+                try{
+                    $getuserdata = $this->user_model->get_user();
+                    if($getuserdata->num_rows() === 0){//若帳號不存在
+                        $this->db->trans_begin();
+                        $getnewuser = $this->user_model->register();
+                        if($this->db->trans_status() === TRUE){
+                            $data = array(
+                            'userid' => $getnewuser[0],
+                            'username' => $getnewuser[1],
+                            'fullname' => $getnewuser[2],
+                            'islogin' => true
+                            );
+                            $this->session->set_userdata($data);
+                            $this->db->trans_commit();
+                        }else{
+                            $this->db->trans_rollback();//交易出現異常
+                        }
+                    redirect('home');
+                    }else{//帳號重複
+                        $data = array(
+                            'existed'=> true
+                        );
+                        $this->session->set_userdata($data);
+                        $page['page_body'] = 'register';
+                        $this->load->view('pages/home/index', $page); 
+                    }
+                }catch(\Exception $e){
+                    $this->db->trans_rollback();//交易出現異常
+                    die($e->getMessage());
                 }
             }else{
                 echo "validation error";
