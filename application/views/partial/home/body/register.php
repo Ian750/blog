@@ -24,6 +24,7 @@
                     <?php } ?>
                     <label>帳號：<input type="text" name="username" placeholder="Username" required pattern="[a-zA-Z0-9]{1,}")></label>
                     <label>密碼：<input type="password" name="password" placeholder="Password" required pattern="[a-zA-Z0-9]{1,}"></label>
+                    <p style="color:#228B22">帳號密碼需為英文或數字</p>
             </fieldset>
             <fieldset>
                 <legend>個人資訊</legend>

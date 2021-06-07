@@ -26,9 +26,9 @@
                               <p style="color:red">帳號或密碼錯誤!</p>
                         <?php } ?>
 
-                        <label>帳號：<input type="text" name="username" placeholder="Username" required><br></label>
-                        <label>密碼：<input type="password" name="password" placeholder="Password" required><br></label>
-                        
+                        <label>帳號：<input type="text" name="username" placeholder="Username" required  pattern="[a-zA-Z0-9]{1,}"><br></label>
+                        <label>密碼：<input type="password" name="password" placeholder="Password" required  pattern="[a-zA-Z0-9]{1,}"><br></label>
+                        <p style="color:#228B22">帳號密碼需為英文或數字</p>
                 </fieldset>
                     <button type="submit">登入</button>
                          <?php echo form_close(); ?>

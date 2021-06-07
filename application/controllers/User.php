@@ -38,7 +38,8 @@ class User extends CI_Controller{
             if($this->form_validation->run()){
                 //查詢資料庫
                 try{
-                     $getuserdata = $this->user_model->get_user();
+                    $islogin = true;
+                    $getuserdata = $this->user_model->get_user($islogin);
                     if($getuserdata->num_rows() === 1){
                         $userdata = $getuserdata->result();
                         $data = array(
@@ -96,7 +97,8 @@ class User extends CI_Controller{
         
             if($this->form_validation->run()){
                 try{
-                    $getuserdata = $this->user_model->get_user();
+                    $islogin = false;
+                    $getuserdata = $this->user_model->get_user($islogin);
                     if($getuserdata->num_rows() === 0){//若帳號不存在
                         $this->db->trans_begin();
                         $getnewuser = $this->user_model->register();
