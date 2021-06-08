@@ -1,0 +1,47 @@
+CREATE DATABASE blog_project;
+
+CREATE TABLE users (
+  user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  fullname VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  gender TINYINT(1) NOT NULL,
+  create_date DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP
+) CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE posts (
+  posts_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  author_id INT UNSIGNED,
+  title VARCHAR(100) NOT NULL,
+  image VARCHAR(100),
+  content VARCHAR(1000) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_date DATETIME,
+  FOREIGN KEY (author_id) REFERENCES users(user_id )
+)CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE comments (
+  comment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  post_id INT UNSIGNED,
+  author_id INT UNSIGNED,
+  author_name VARCHAR(100) NOT NULL,
+  comment VARCHAR(500) NOT NULL,
+  comment_createtime DATETIME NOT NULL, 
+  FOREIGN KEY (post_id) REFERENCES posts(posts_id) ON DELETE CASCADE,
+  FOREIGN KEY (author_id) REFERENCES users(user_id)
+)CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+INSERT INTO `users`( `username`, `fullname`, `email`, `password`, `gender`, `create_date`) VALUES 
+('aa', 'AaM', '11@gmail.com', '12','1',NOW()),
+('bb', 'BbM', '22@gmail.com', '123','2',NOW()),
+('cc', 'CcM', '33@gmail.com', '123','2',NOW());
+
+
+INSERT INTO `posts`(`author_id`, `title`, `image`, `content`, `create_date`) VALUES ('1','C++','image-3.jpg','C++  is a general-purpose programming language. It has imperative, object-oriented and generic programming features, while also providing facilities for low-level memory manipulation.\r\n\r\nIt was designed with a bias toward system programming and embedded, resource-constrained and large systems, with performance, efficiency and flexibility of use as its design highlights.[7] C++ has also been found useful in many other contexts, with key strengths being software infrastructure and resource-constrained applications,[7] including desktop applications, servers (e.g. e-commerce, Web search or SQL servers), and performance-critical applications (e.g. telephone switches or space probes).[8] C++ is a compiled language, with implementations of it available on many platforms. Many vendors provide C++ compilers, including the Free Software Foundation, Microsoft, Intel, and IBM.\r\n\r\nC++ is standardized by the International Organization for Standardization (ISO), with the latest standard version rati',NOW())
+
+INSERT INTO `posts`(`author_id`, `title`, `image`, `content`,`create_date`) VALUES ('2','Java','image-4.png','Java是一種廣泛使用的電腦程式設計語言，擁有跨平台、物件導向、泛型程式設計的特性，廣泛應用於企業級Web應用開發和行動應用開發。
+任職於昇陽電腦的詹姆斯·高斯林等人於1990年代初開發Java語言的雛形，最初被命名為Oak，目標設定在家用電器等小型系統的程式語言，應用在電視機、電話、鬧鐘、烤麵包機等家用電器的控制和通訊。由於這些智慧型家電的市場需求沒有預期的高，昇陽電腦系統（Sun公司）放棄了該項計劃。隨著1990年代網際網路的發展，Sun公司看見Oak在網際網路上應用的前景，於是改造了Oak，於1995年5月以Java的名稱正式釋出。Java伴隨著網際網路的迅猛發展而發展，逐漸成為重要的網路程式語言。')
+
