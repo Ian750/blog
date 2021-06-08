@@ -12,12 +12,16 @@ class User_model extends CI_Model
 
 	//登入查詢
 	public function get_user($isLogin){
-        $this->db->where('username', $this->input->post('username'));
-        if($isLogin){
-        	$this->db->where('password', $this->input->post('password'));
-        }
-        $result = $this->db->get('users');
-        return $result;
+		//sql injection prevention
+		if($isLogin){
+			$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+			$result = $this->db->query($sql, array($this->input->post('username'), $this->input->post('password')));
+			return $result;
+	    }else{
+	    	$sql = "SELECT * FROM users WHERE username = ?";
+			$result = $this->db->query($sql, array($this->input->post('username')));
+			return $result;
+	    }
     }
 
 	//會員註冊

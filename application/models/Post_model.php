@@ -74,12 +74,10 @@ class Post_model extends CI_Model{
         $imagefile = $row->image;
         if(file_exists("uploads//image/".$imagefile)){
            $delete = unlink("uploads//image/".$imagefile);
-           if($delete){
-            $this->db->where("posts_id", $post_id);
-            $res = $this->db->delete("posts");
-            return $res;
-            }
-        }
+        }   
+        $this->db->where("posts_id", $post_id);
+        $res = $this->db->delete("posts");
+        return $res;
     }
 
     //新增評論
