@@ -26,7 +26,7 @@
          </div>
          <div class="post-text">
             <p>
-                <?php echo substr($row->content, 0, 118);?>
+                <?php echo mb_substr($row->content, 0, 118);?>
             </p>
         </div>
         <div>

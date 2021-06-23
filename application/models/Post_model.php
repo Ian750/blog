@@ -33,10 +33,12 @@ class Post_model extends CI_Model{
 
 	//新增文章
 	public function insert($file){
-        $data['title'] = $this->input->post('title');
+        $title = $this->input->post('title');
+        $data['title'] = html_escape($title);
         $data['author_id'] = $this->session->userdata('userid');
         $data['image'] = $file['file_name'];
-        $data['content'] = $this->input->post('content');
+        $content = $this->input->post('content');
+        $data['content'] = html_escape($content);
 
         date_default_timezone_set('Asia/Taipei'); 
         $now = date('Y-m-d H:i:s');
@@ -48,12 +50,14 @@ class Post_model extends CI_Model{
     //編輯文章
     public function edit($file){
     	$data['posts_id'] = $this->input->post('posts_id');
-    	$data['title'] = $this->input->post('title');
+        $title = $this->input->post('title');
+        $data['title'] = html_escape($title);
         if($file){
             $data['image'] = $file['file_name'];
             $this->db->set('image', $data['image']);
         }
-    	$data['content'] = $this->input->post('content');
+    	$content = $this->input->post('content');
+        $data['content'] = html_escape($content);
 
         date_default_timezone_set('Asia/Taipei');
         $now = date('Y-m-d H:i:s');
